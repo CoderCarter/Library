@@ -1,0 +1,71 @@
+
+1.
+CREATE PROCEDURE LostTribeinSharpstown
+AS
+SELECT B.title as Book, L.branchname as Branch, COUNT(*) AS "Number of Copies"
+from copies C
+inner join Library L on l.branchid = C.branchid
+inner join Book B on B.bookid = C.bookid
+where b.title = 'The Lost Tribe' and branchname = 'sharpstown'
+group by title, branchname
+go
+
+2.
+CREATE PROCEDURE LostTribeamount
+AS
+SELECT B.title as Book, L.branchname as Branch, COUNT(*) AS "Number of Copies"
+from copies C
+inner join Library L on l.branchid = C.branchid
+inner join Book B on B.bookid = C.bookid
+where b.title = 'The Lost Tribe'
+group by title, branchname
+go
+
+3.
+CREATE PROCEDURE BorrowerswithNoItemsDue
+AS
+select BW.name
+from Borrower BW 
+where bw.cardno is null
+go
+
+4. (I didn't have any due today so I entered a date)
+
+CREATE PROCEDURE BorrowerswithItemsDue
+AS
+select B.title as Book, BW.name as Borrower, BW.addrs as 'Address'
+from Loans
+inner join Book B on b.bookid = loans.bookid
+inner join Borrower BW on BW.cardno = Loans.cardno
+inner join Library L on L.Branchid = Loans.Branchid
+where Loans.duedate = '2018-04-22'
+go
+
+5.
+CREATE PROCEDURE BranchesLoanedBooks
+AS
+select l.branchname as Branch, count(cardno) as Loaned
+from Loans
+inner join library L on L.Branchid = loans.Branchid
+group by L.branchname
+go
+
+6.
+CREATE PROCEDURE Morethan5books
+AS
+select BW.name as Borrower, BW.addrs as 'Address', count(l.cardno) as Loaned
+from Borrower BW
+inner join Loans L on L.cardno = BW.cardno
+group by BW.name, BW.addrs
+having count(l.cardno) >= 5
+go
+
+CREATE PROCEDURE BooksbySKingatCentral
+AS
+select B.title as book, C.amount as 'Number of Copies'
+from Copies C
+inner join book B on b.bookid = c.bookid
+inner join Library L on L.Branchid = c.Branchid
+inner join Author A on a.bookid = c.bookid
+where l.Branchname = 'central' and AuthorName = 'Stephen King'
+go
